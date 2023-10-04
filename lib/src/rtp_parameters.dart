@@ -1,6 +1,8 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:mediasoup_client_flutter/src/common/index.dart';
 
+import 'utils.dart';
+
 /// The RTP capabilities define what mediasoup or an endpoint can receive at
 /// media level.
 class RtpCapabilities {
@@ -447,9 +449,9 @@ class RtpEncodingParameters extends RTCRtpEncoding {
           ? PriorityExtension.fromString(data['networkPriority'])
           : null,
       active: data['active'] ?? true,
-      maxBitrate: data['maxBitrate'],
-      maxFramerate: data['maxFramerate'],
-      minBitrate: data['minBitrate'],
+      maxBitrate: intOrNull(data['maxBitrate']),
+      maxFramerate: intOrNull(data['maxFramerate']),
+      minBitrate: intOrNull(data['minBitrate']),
       numTemporalLayers: data['numTemporalLayers'],
       rid: data['rid'],
       scaleResolutionDownBy: data['scaleResolutionDownBy'],
