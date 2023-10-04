@@ -153,7 +153,7 @@ class Device {
     return _canProduceByKind!.canIt(kind);
   }
 
-  Transport _createTransport({
+  Future<Transport> _createTransport({
     required Direction direction,
     required String id,
     required IceParameters iceParameters,
@@ -169,7 +169,7 @@ class Device {
     Function? consumerCallback,
     Function? dataProducerCallback,
     Function? dataConsumerCallback,
-  }) {
+  }) async {
     if (!_loaded) {
       throw ('not loaded');
     }
@@ -187,6 +187,16 @@ class Device {
     Transport transport = Transport(
       direction: direction,
       id: id,
+      appData: appData,
+      extendedRtpCapabilities: _extendedRtpCapabilities,
+      canProduceByKind: _canProduceByKind!,
+      producerCallback: producerCallback,
+      dataProducerCallback: dataProducerCallback,
+      consumerCallback: consumerCallback,
+      dataConsumerCallback: dataConsumerCallback,
+    );
+
+    await transport.initTransport(
       iceParameters: iceParameters,
       iceCandidates: iceCandidates,
       dtlsParameters: dtlsParameters,
@@ -195,13 +205,6 @@ class Device {
       iceTransportPolicy: iceTransportPolicy,
       additionalSettings: additionalSettings,
       proprietaryConstraints: proprietaryConstraints,
-      appData: appData,
-      extendedRtpCapabilities: _extendedRtpCapabilities,
-      canProduceByKind: _canProduceByKind!,
-      producerCallback: producerCallback,
-      dataProducerCallback: dataProducerCallback,
-      consumerCallback: consumerCallback,
-      dataConsumerCallback: dataConsumerCallback,
     );
 
     // Emit observer event.
@@ -216,7 +219,7 @@ class Device {
   ///
   /// @throws {InvalidStateError} if not loaded.
   /// @throws {TypeError} if wrong arguments.
-  Transport createSendTransport({
+  Future<Transport> createSendTransport({
     required String id,
     required IceParameters iceParameters,
     required List<IceCandidate> iceCandidates,
@@ -249,7 +252,7 @@ class Device {
     );
   }
 
-  Transport createSendTransportFromMap(
+  Future<Transport> createSendTransportFromMap(
     Map data, {
     Function? producerCallback,
     Function? dataProducerCallback,
@@ -285,7 +288,7 @@ class Device {
   ///
   /// @throws {InvalidStateError} if not loaded.
   /// @throws {TypeError} if wrong arguments.
-  Transport createRecvTransport({
+  Future<Transport> createRecvTransport({
     required String id,
     required IceParameters iceParameters,
     required List<IceCandidate> iceCandidates,
@@ -318,7 +321,7 @@ class Device {
     );
   }
 
-  Transport createRecvTransportFromMap(
+  Future<Transport> createRecvTransportFromMap(
     Map data, {
     Function? consumerCallback,
     Function? dataConsumerCallback,

@@ -483,16 +483,8 @@ class Transport extends EnhancedEventEmitter {
   Transport({
     required Direction direction,
     required String id,
-    required IceParameters iceParameters,
-    required List<IceCandidate> iceCandidates,
-    required DtlsParameters dtlsParameters,
-    SctpParameters? sctpParameters,
-    List<RTCIceServer> iceServers = const <RTCIceServer>[],
-    RTCIceTransportPolicy? iceTransportPolicy,
-    Map<String, dynamic> additionalSettings = const <String, dynamic>{},
-    Map<String, dynamic> proprietaryConstraints = const <String, dynamic>{},
-    Map<String, dynamic> appData = const <String, dynamic>{},
     ExtendedRtpCapabilities? extendedRtpCapabilities,
+    Map<String, dynamic> appData = const <String, dynamic>{},
     required CanProduceByKind canProduceByKind,
     this.producerCallback,
     this.consumerCallback,
@@ -505,6 +497,20 @@ class Transport extends EnhancedEventEmitter {
     _direction = direction;
     _extendedRtpCapabilities = extendedRtpCapabilities;
     _canProduceByKind = canProduceByKind;
+
+    _appData = appData;
+  }
+
+  Future initTransport({
+    required IceParameters iceParameters,
+    required List<IceCandidate> iceCandidates,
+    required DtlsParameters dtlsParameters,
+    SctpParameters? sctpParameters,
+    List<RTCIceServer> iceServers = const <RTCIceServer>[],
+    RTCIceTransportPolicy? iceTransportPolicy,
+    Map<String, dynamic> additionalSettings = const <String, dynamic>{},
+    Map<String, dynamic> proprietaryConstraints = const <String, dynamic>{},
+  }) async {
     _maxSctpMessageSize =
         sctpParameters != null ? sctpParameters.maxMessageSize : null;
 
@@ -519,7 +525,7 @@ class Transport extends EnhancedEventEmitter {
 
     _handler = HandlerInterface.handlerFactory();
 
-    _handler.run(
+    await _handler.run(
       options: HandlerRunOptions(
         direction: direction,
         iceParameters: iceParameters,
@@ -530,11 +536,9 @@ class Transport extends EnhancedEventEmitter {
         iceTransportPolicy: iceTransportPolicy,
         additionalSettings: additionalSettings,
         proprietaryConstraints: proprietaryConstraints,
-        extendedRtpCapabilities: extendedRtpCapabilities,
+        extendedRtpCapabilities: _extendedRtpCapabilities,
       ),
     );
-
-    _appData = appData;
 
     _handleHandler();
   }
@@ -723,7 +727,7 @@ class Transport extends EnhancedEventEmitter {
     });
 
     producer.on('@replacetrack', (data) {
-      final MediaStreamTrack track = data['track'];
+      final MediaStreamTrack? track = data['track'];
       final callback = data['callback'];
       final errback = data['errback'];
       _flexQueue.addTask(FlexTaskAdd(
@@ -1097,7 +1101,8 @@ class Transport extends EnhancedEventEmitter {
       throw ('not a sending Transport');
     } else if (_maxSctpMessageSize == null) {
       throw ('SCTP not enabled by remote Transport');
-    } if (listeners('connect').isEmpty && _connectionState == 'new') {
+    }
+    if (listeners('connect').isEmpty && _connectionState == 'new') {
       throw ('no "connect" listener set into this transport');
     } else if (listeners('producedata').isEmpty) {
       throw ('no "producedata" listener set into this transport');
