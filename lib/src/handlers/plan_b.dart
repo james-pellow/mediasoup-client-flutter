@@ -361,7 +361,7 @@ class PlanB extends HandlerInterface {
   }
 
   @override
-  void run({required HandlerRunOptions options}) async {
+  Future run({required HandlerRunOptions options}) async {
     _logger.debug('run()');
 
     _direction = options.direction;
