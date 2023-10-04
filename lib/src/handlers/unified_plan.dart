@@ -328,7 +328,7 @@ class UnifiedPlan extends HandlerInterface {
 
     if (options.track != null) {
       _logger.debug(
-          'replaceTrack() [localId:${options.localId}, track.id${options.track.id}');
+          'replaceTrack() [localId:${options.localId}, track.id${options.track?.id}');
     } else {
       _logger.debug('replaceTrack() [localId:${options.localId}, no track');
     }
@@ -340,7 +340,7 @@ class UnifiedPlan extends HandlerInterface {
     }
 
     await transceiver.sender.replaceTrack(options.track);
-    _mapMidTransceiver.remove(options.localId);
+    // _mapMidTransceiver.remove(options.localId);
   }
 
   @override
@@ -845,9 +845,15 @@ class UnifiedPlan extends HandlerInterface {
       throw ('associated RTCRtpTransceiver not found');
     }
 
-    // await transceiver.sender.replaceTrack(null);
+    await transceiver.sender.replaceTrack(null);
     await _pc!.removeTrack(transceiver.sender);
-    _remoteSdp.closeMediaSection(transceiver.mid);
+    final mediaSectionClosed = _remoteSdp.closeMediaSection(transceiver.mid);
+
+    if (mediaSectionClosed) {
+      try {
+        transceiver.stop();
+      } catch (e) {}
+    }
 
     RTCSessionDescription offer = await _pc!.createOffer({});
 

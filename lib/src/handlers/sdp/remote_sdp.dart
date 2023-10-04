@@ -93,25 +93,25 @@ class RemoteSdp {
 
     // if DTLS parameters are given, assume WebRTC and BUNDLE.
     // if (dtlsParameters != null) {
-      _sdpObject.msidSemantic = MsidSemantic(
-        semantic: 'WMS',
-        token: '*',
-      );
+    _sdpObject.msidSemantic = MsidSemantic(
+      semantic: 'WMS',
+      token: '*',
+    );
 
-      // NOTE: We take the latest fingerprint.
-      int numFingerprints = _dtlsParameters.fingerprints.length;
+    // NOTE: We take the latest fingerprint.
+    int numFingerprints = _dtlsParameters.fingerprints.length;
 
-      _sdpObject.fingerprint = Fingerprint(
-        type: dtlsParameters.fingerprints[numFingerprints - 1].algorithm,
-        hash: dtlsParameters.fingerprints[numFingerprints - 1].value,
-      );
+    _sdpObject.fingerprint = Fingerprint(
+      type: dtlsParameters.fingerprints[numFingerprints - 1].algorithm,
+      hash: dtlsParameters.fingerprints[numFingerprints - 1].value,
+    );
 
-      _sdpObject.groups = [
-        Group(
-          type: 'BUNDLE',
-          mids: '',
-        ),
-      ];
+    _sdpObject.groups = [
+      Group(
+        type: 'BUNDLE',
+        mids: '',
+      ),
+    ];
     // }
 
     // If there are plain RPT parameters, override SDP origin.
@@ -163,7 +163,7 @@ class RemoteSdp {
     mediaSection.disable();
   }
 
-  void closeMediaSection(String mid) {
+  bool closeMediaSection(String mid) {
     int? idx = _midToIndex[mid];
 
     if (idx == null) {
@@ -181,13 +181,15 @@ class RemoteSdp {
 
       disableMediaSection(mid);
 
-      return;
+      return false;
     }
 
     mediaSection.close();
 
     // Regenerate BUNDLE mids.
     _regenerateBundleMids();
+
+    return true;
   }
 
   void planBStopReceiving(
