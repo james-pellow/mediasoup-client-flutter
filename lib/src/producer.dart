@@ -89,30 +89,43 @@ Logger _logger = Logger('Producer');
 class Producer extends EnhancedEventEmitter {
   /// Id.
   final String id;
+
   /// Local id.
   final String localId;
+
   /// Closed flag.
   bool closed;
+
   /// Associated RTCRtpSender.
   RTCRtpSender? rtpSender;
+
   /// Local track.
   final MediaStreamTrack track;
+
   /// Producer kind.
   late String kind;
+
   /// RTP parameters.
   final RtpParameters rtpParameters;
+
   /// Paused flag.
   late bool paused;
+
   /// Video max spatial layer.
   late final int? maxSpatialLayer;
+
   /// Whether the Producer should call stop() in given tracks.
   final bool stopTracks;
+
   /// Whether the Producer should set track.enabled = false when paused.
   final bool disableTrackOnPause;
+
   /// Whether we should replace the RTCRtpSender.track with null when paused.
   final bool zeroRtpOnPause;
+
   /// App custom data.
   final Map<String, dynamic> appData;
+
   /// Observer.
   ///
   /// @emits close
@@ -120,8 +133,10 @@ class Producer extends EnhancedEventEmitter {
   /// @emits resume
   /// @emits trackended
   final EnhancedEventEmitter observer;
+
   /// Stream
   final MediaStream stream;
+
   /// Source
   final String source;
 
@@ -145,7 +160,8 @@ class Producer extends EnhancedEventEmitter {
     required this.stream,
     required this.source,
     this.closed = false,
-  }) : observer = EnhancedEventEmitter(), super() {
+  })  : observer = EnhancedEventEmitter(),
+        super() {
     _logger.debug('constructor()');
 
     kind = track.kind!;
