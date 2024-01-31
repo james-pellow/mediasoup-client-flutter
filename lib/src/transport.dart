@@ -581,9 +581,8 @@ class Transport extends EnhancedEventEmitter {
         _connectionState = connectionState;
 
         if (!_closed) {
-          safeEmit('connectionstatechange', {
-            'connectionState': connectionState,
-          });
+          final state = peerConnectionStateForString(connectionState);
+          safeEmit('connectionstatechange', {'connectionState': state});
         }
       },
     );
