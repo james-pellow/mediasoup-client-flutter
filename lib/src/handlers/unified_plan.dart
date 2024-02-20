@@ -552,7 +552,7 @@ class UnifiedPlan extends HandlerInterface {
             ? options.encodings
             : [RtpEncodingParameters(scalabilityMode: '')])
         .first
-        .scalabilityMode!);
+        .scalabilityMode);
 
     if (options.encodings.length == 1 &&
         layers.spatialLayers > 1 &&
