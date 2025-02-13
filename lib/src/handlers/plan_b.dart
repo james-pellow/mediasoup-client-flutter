@@ -186,9 +186,14 @@ class PlanB extends HandlerInterface {
     _logger.debug(
         'receive() [trackId:${options.trackId}, kind:${RTCRtpMediaTypeExtension.value(options.kind)}]');
 
+    final cname = options.rtpParameters.rtcp?.cname;
+    if (cname == null) {
+      throw ('missing mandatory "rtcp.cname" field in RtpParameters');
+    }
+
     String localId = options.trackId;
     String mid = RTCRtpMediaTypeExtension.value(options.kind);
-    String streamId = options.rtpParameters.rtcp!.cname;
+    String streamId = cname;
 
     _logger.debug(
         'receive() | forcing a random remote streamId to avoid well known bug in native');
@@ -213,9 +218,8 @@ class PlanB extends HandlerInterface {
     RTCSessionDescription answer = await _pc!.createAnswer();
 
     SdpObject localSdpObject = SdpObject.fromMap(parse(answer.sdp!));
-    MediaObject? answerMediaObject = localSdpObject.media.firstWhere(
+    MediaObject? answerMediaObject = localSdpObject.media.firstWhereOrNull(
       (MediaObject m) => m.mid == mid,
-      orElse: () => null as MediaObject,
     );
 
     // May need to modify codec parameters in the answer based on codec
@@ -239,13 +243,12 @@ class PlanB extends HandlerInterface {
             .getRemoteStreams()
             .where((s) => s != null)
             .toList() as List<MediaStream>)
-        .firstWhere(
+        .firstWhereOrNull(
       (MediaStream s) => s.id == streamId,
-      orElse: () => null as MediaStream,
     );
-    MediaStreamTrack? track = stream.getTrackById(localId);
+    MediaStreamTrack? track = stream?.getTrackById(localId);
 
-    if (track == null) {
+    if (track == null || stream == null) {
       throw ('remote track not found');
     }
 

@@ -187,11 +187,16 @@ class UnifiedPlan extends HandlerInterface {
     String localId =
         options.rtpParameters.mid ?? _mapMidTransceiver.length.toString();
 
+    final cname = options.rtpParameters.rtcp?.cname;
+    if (cname == null) {
+      throw ('missing mandatory "rtcp.cname" field in rtpParameters');
+    }
+
     _remoteSdp.receive(
       mid: localId,
       kind: options.kind,
       offerRtpParameters: options.rtpParameters,
-      streamId: options.rtpParameters.rtcp!.cname,
+      streamId: cname,
       trackId: options.trackId,
     );
 

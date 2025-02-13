@@ -820,9 +820,14 @@ class RtcpParameters extends RTCRTCPParameters {
     String? cname,
     bool? reducedSize,
   }) {
+    final cnameFinal = cname != null ? cname : old.cname;
+    if (cnameFinal == null) {
+      throw ('cname is required');
+    }
+
     return RtcpParameters(
       mux: mux != null ? mux : old.mux,
-      cname: cname != null ? cname : old.cname,
+      cname: cnameFinal,
       reducedSize: reducedSize != null ? reducedSize : old.reducedSize,
     );
   }

@@ -3,6 +3,7 @@ import 'package:mediasoup_client_flutter/src/sctp_parameters.dart';
 import 'package:mediasoup_client_flutter/src/sdp_object.dart';
 import 'package:mediasoup_client_flutter/src/transport.dart';
 import 'package:mediasoup_client_flutter/src/rtp_parameters.dart';
+import 'package:collection/collection.dart';
 
 class Rtp {
   final int payload;
@@ -1020,11 +1021,9 @@ class AnswerMediaSection extends MediaSection {
               final int? videoGoogleMinBitrate =
                   codecOptions.videoGoogleMinBitrate;
 
-              final RtpCodecParameters? offerCodec =
-                  offerRtpParameters?.codecs.firstWhere(
-                (RtpCodecParameters c) => c.payloadType == codec.payloadType,
-                orElse: () => null as RtpCodecParameters,
-              );
+              final RtpCodecParameters? offerCodec = offerRtpParameters?.codecs
+                  .firstWhereOrNull((RtpCodecParameters c) =>
+                      c.payloadType == codec.payloadType);
 
               switch (codec.mimeType.toLowerCase()) {
                 case 'audio/opus':
@@ -1368,12 +1367,12 @@ class OfferMediaSection extends MediaSection {
           _mediaObject.ssrcs = <Ssrc>[];
           _mediaObject.ssrcGroups = [];
 
-          if (offerRtpParameters.rtcp?.cname != null &&
-              offerRtpParameters.rtcp!.cname.isNotEmpty) {
+          final cname = offerRtpParameters.rtcp?.cname;
+          if (cname != null && cname.isNotEmpty) {
             _mediaObject.ssrcs!.add(Ssrc(
               id: ssrc,
               attribute: 'cname',
-              value: offerRtpParameters.rtcp!.cname,
+              value: cname,
             ));
           }
 
@@ -1386,12 +1385,11 @@ class OfferMediaSection extends MediaSection {
           }
 
           if (rtxSsrc != null) {
-            if (offerRtpParameters.rtcp?.cname != null &&
-                offerRtpParameters.rtcp!.cname.isNotEmpty) {
+            if (cname != null && cname.isNotEmpty) {
               _mediaObject.ssrcs!.add(Ssrc(
                 id: rtxSsrc,
                 attribute: 'cname',
-                value: offerRtpParameters.rtcp!.cname,
+                value: cname,
               ));
             }
 
@@ -1453,11 +1451,12 @@ class OfferMediaSection extends MediaSection {
         ? encoding.rtx!.ssrc
         : null;
 
-    if (offerRtpParameters.rtcp?.cname != null) {
+    final cname = offerRtpParameters.rtcp?.cname;
+    if (cname != null) {
       _mediaObject.ssrcs!.add(Ssrc(
         id: ssrc,
         attribute: 'cname',
-        value: offerRtpParameters.rtcp!.cname,
+        value: cname,
       ));
     }
 
@@ -1468,12 +1467,11 @@ class OfferMediaSection extends MediaSection {
     ));
 
     if (rtxSsrc != null) {
-      if (offerRtpParameters.rtcp?.cname != null &&
-          offerRtpParameters.rtcp!.cname.isNotEmpty) {
+      if (cname != null && cname.isNotEmpty) {
         _mediaObject.ssrcs!.add(Ssrc(
           id: rtxSsrc,
           attribute: 'cname',
-          value: offerRtpParameters.rtcp!.cname,
+          value: cname,
         ));
       }
 
@@ -1517,9 +1515,11 @@ String getCodecName(RtpCodecParameters codec) {
   Iterable<RegExpMatch> mimeTypeMatch =
       mimeTypeRegex.allMatches(codec.mimeType);
 
-  if (mimeTypeMatch == null) {
+  final match = mimeTypeMatch.elementAt(0).group(2);
+
+  if (match == null) {
     throw ('invalid codec.mimeType');
   }
 
-  return mimeTypeMatch.elementAt(0).group(2)!;
+  return match;
 }
