@@ -214,9 +214,8 @@ class UnifiedPlan extends HandlerInterface {
 
     SdpObject localSdpObject = SdpObject.fromMap(parse(answer.sdp!));
 
-    MediaObject answerMediaObject = localSdpObject.media.firstWhere(
-      (MediaObject m) => m.mid == localId,
-      orElse: () => null as MediaObject,
+    MediaObject? answerMediaObject = localSdpObject.media.firstWhereOrNull(
+      (m) => m.mid == localId,
     );
 
     // May need to modify codec parameters in the answer based on codec
@@ -242,10 +241,11 @@ class UnifiedPlan extends HandlerInterface {
 
     final transceivers = await _pc!.getTransceivers();
 
-    RTCRtpTransceiver? transceiver = transceivers.firstWhereOrNull(
-      (RTCRtpTransceiver t) => t.mid == localId,
-      // orElse: () => null,
-    );
+    RTCRtpTransceiver? transceiver = transceivers.firstWhereOrNull((t) {
+      // Unfortunately, mid is defined as String but can be null.
+      final mid = (t as dynamic).mid as String?;
+      return mid == localId;
+    });
 
     if (transceiver == null) {
       throw ('new RTCRtpTransceiver not found');
