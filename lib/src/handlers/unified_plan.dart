@@ -254,19 +254,10 @@ class UnifiedPlan extends HandlerInterface {
     // Store in the map.
     _mapMidTransceiver[localId] = transceiver;
 
-    final MediaStream? stream = _pc!
-        .getRemoteStreams()
-        .firstWhereOrNull((e) => e?.id == options.rtpParameters.rtcp!.cname);
-
-    if (stream == null) {
-      throw ('Stream not found');
-    }
-
     return HandlerReceiveResult(
       localId: localId,
       track: transceiver.receiver.track!,
       rtpReceiver: transceiver.receiver,
-      stream: stream,
     );
   }
 

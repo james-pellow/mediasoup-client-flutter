@@ -51,9 +51,6 @@ class Consumer extends EnhancedEventEmitter {
   /// App custom data.
   final Map<String, dynamic> appData;
 
-  /// Stream.
-  final MediaStream stream;
-
   /// Observer instance.
   ///
   /// @emits close
@@ -79,7 +76,6 @@ class Consumer extends EnhancedEventEmitter {
     required this.track,
     required this.rtpParameters,
     required this.appData,
-    required this.stream,
     this.peerId,
     this.closed = false,
   })  : observer = EnhancedEventEmitter(),
@@ -98,7 +94,6 @@ class Consumer extends EnhancedEventEmitter {
     required this.track,
     required this.rtpParameters,
     required this.appData,
-    required this.stream,
     required this.peerId,
     required this.closed,
     required this.paused,
@@ -257,7 +252,6 @@ class Consumer extends EnhancedEventEmitter {
         other.rtpParameters == rtpParameters &&
         other.paused == paused &&
         mapEquals(other.appData, appData) &&
-        other.stream == stream &&
         other.peerId == peerId;
   }
 
@@ -272,7 +266,6 @@ class Consumer extends EnhancedEventEmitter {
         rtpParameters.hashCode ^
         paused.hashCode ^
         appData.hashCode ^
-        stream.hashCode ^
         peerId.hashCode;
   }
 
@@ -300,7 +293,6 @@ class Consumer extends EnhancedEventEmitter {
       rtpParameters: rtpParameters ?? this.rtpParameters,
       paused: paused ?? this.paused,
       appData: appData ?? this.appData,
-      stream: stream ?? this.stream,
       observer: observer ?? this.observer,
       peerId: peerId ?? this.peerId,
     );

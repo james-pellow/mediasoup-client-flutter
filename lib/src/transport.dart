@@ -1002,7 +1002,6 @@ class Transport extends EnhancedEventEmitter {
       appData: Map<String, dynamic>.from(arguments.appData),
       track: receiveResult.track,
       rtpReceiver: receiveResult.rtpReceiver,
-      stream: receiveResult.stream,
       peerId: arguments.peerId,
     );
 

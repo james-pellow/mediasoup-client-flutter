@@ -257,7 +257,7 @@ class PlanB extends HandlerInterface {
       'rtpParameters': options.rtpParameters,
     };
 
-    return HandlerReceiveResult(localId: localId, track: track, stream: stream);
+    return HandlerReceiveResult(localId: localId, track: track);
   }
 
   @override

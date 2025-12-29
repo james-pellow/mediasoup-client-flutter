@@ -153,13 +153,11 @@ class HandlerReceiveResult {
   final String localId;
   final MediaStreamTrack track;
   final RTCRtpReceiver? rtpReceiver;
-  final MediaStream stream;
 
   const HandlerReceiveResult({
     required this.localId,
     required this.track,
     this.rtpReceiver,
-    required this.stream,
   });
 }
 
