@@ -454,7 +454,7 @@ class PlanB extends HandlerInterface {
     }
 
     // await options.stream.addTrack(options.track);
-    await _pc!.addStream(options.stream);
+    await _pc!.addTrack(options.track);
 
     RTCSessionDescription offer = await _pc!.createOffer({
       'mandatory': {

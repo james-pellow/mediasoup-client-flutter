@@ -128,14 +128,12 @@ class HandlerSendOptions {
   final List<RtpEncodingParameters> encodings;
   final ProducerCodecOptions? codecOptions;
   final RtpCodecCapability? codec;
-  final MediaStream stream;
 
   const HandlerSendOptions({
     required this.track,
     this.encodings = const [],
     this.codecOptions,
     this.codec,
-    required this.stream,
   });
 }
 

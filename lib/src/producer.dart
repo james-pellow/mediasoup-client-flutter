@@ -134,9 +134,6 @@ class Producer extends EnhancedEventEmitter {
   /// @emits trackended
   final EnhancedEventEmitter observer;
 
-  /// Stream
-  final MediaStream stream;
-
   /// Source
   final String source;
 
@@ -157,7 +154,6 @@ class Producer extends EnhancedEventEmitter {
     required this.disableTrackOnPause,
     required this.zeroRtpOnPause,
     required this.appData,
-    required this.stream,
     required this.source,
     this.closed = false,
   })  : observer = EnhancedEventEmitter(),
@@ -180,7 +176,6 @@ class Producer extends EnhancedEventEmitter {
     required this.disableTrackOnPause,
     required this.zeroRtpOnPause,
     required this.appData,
-    required this.stream,
     required this.source,
     this.closed = false,
     this.maxSpatialLayer,
@@ -447,7 +442,6 @@ class Producer extends EnhancedEventEmitter {
 
       if (stopTracks) {
         track.stop();
-        stream.dispose();
       }
     } catch (error) {}
   }
@@ -470,7 +464,6 @@ class Producer extends EnhancedEventEmitter {
         other.disableTrackOnPause == disableTrackOnPause &&
         other.zeroRtpOnPause == zeroRtpOnPause &&
         mapEquals(other.appData, appData) &&
-        other.stream == stream &&
         other.source == source;
   }
 
@@ -489,7 +482,6 @@ class Producer extends EnhancedEventEmitter {
         disableTrackOnPause.hashCode ^
         zeroRtpOnPause.hashCode ^
         appData.hashCode ^
-        stream.hashCode ^
         source.hashCode;
   }
 
@@ -526,7 +518,6 @@ class Producer extends EnhancedEventEmitter {
       zeroRtpOnPause: zeroRtpOnPause ?? this.zeroRtpOnPause,
       appData: appData ?? this.appData,
       observer: observer ?? this.observer,
-      stream: stream ?? this.stream,
       source: source ?? this.source,
     );
   }

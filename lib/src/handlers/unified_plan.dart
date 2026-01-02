@@ -525,7 +525,6 @@ class UnifiedPlan extends HandlerInterface {
       kind: RTCRtpMediaTypeExtension.fromString(options.track.kind!),
       init: RTCRtpTransceiverInit(
         direction: TransceiverDirection.SendOnly,
-        streams: [options.stream],
         sendEncodings: options.encodings,
       ),
     );

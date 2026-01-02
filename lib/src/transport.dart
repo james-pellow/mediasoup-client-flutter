@@ -32,7 +32,6 @@ extension ProtocolExtension on Protocol {
 
 class ProduceArguments {
   final MediaStreamTrack track;
-  final MediaStream stream;
   final List<RtpEncodingParameters> encodings;
   final ProducerCodecOptions? codecOptions;
   final RtpCodecCapability? codec;
@@ -44,7 +43,6 @@ class ProduceArguments {
 
   const ProduceArguments({
     required this.track,
-    required this.stream,
     required this.encodings,
     this.codecOptions,
     this.codec,
@@ -876,7 +874,6 @@ class Transport extends EnhancedEventEmitter {
         encodings: normalizedEncodings,
         codecOptions: arguments.codecOptions,
         codec: arguments.codec,
-        stream: arguments.stream,
       ));
 
       try {
@@ -899,7 +896,6 @@ class Transport extends EnhancedEventEmitter {
           disableTrackOnPause: arguments.disableTrackOnPause,
           zeroRtpOnPause: arguments.zeroRtpOnPause,
           appData: arguments.appData,
-          stream: arguments.stream,
           source: arguments.source,
         );
 
@@ -933,7 +929,6 @@ class Transport extends EnhancedEventEmitter {
   /// use producerCallback to receive a new Producer.
   void produce({
     required MediaStreamTrack track,
-    required MediaStream stream,
     List<RtpEncodingParameters> encodings = const <RtpEncodingParameters>[],
     ProducerCodecOptions? codecOptions,
     RtpCodecCapability? codec,
@@ -964,7 +959,6 @@ class Transport extends EnhancedEventEmitter {
         execFun: _produce,
         argument: ProduceArguments(
           track: track,
-          stream: stream,
           encodings: encodings,
           codecOptions: codecOptions,
           codec: codec,
