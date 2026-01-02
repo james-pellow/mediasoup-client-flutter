@@ -1138,10 +1138,32 @@ class AnswerMediaSection extends MediaSection {
               continue;
             }
 
-            _mediaObject.ext!.add(Ext(
-              uri: ext.uri,
-              value: ext.id,
-            ));
+            // Build uri -> id map from the offer.
+            final Map<String, int> offerExtIdByUri = {};
+            for (final e in offerMediaObject.ext ?? <Ext>[]) {
+              final uri = e.uri;
+              final value = e.value;
+              if (uri == null || value == null) continue;
+
+              // e.value is the extmap id in the offer
+              offerExtIdByUri[uri] = value;
+            }
+
+            _mediaObject.ext = <Ext>[];
+
+            for (final RtpHeaderExtensionParameters ext
+                in answerRtpParameters?.headerExtensions ??
+                    <RtpHeaderExtensionParameters>[]) {
+              final int? offerId = offerExtIdByUri[ext.uri];
+
+              // Only include if it was offered (and therefore has an offer id).
+              if (offerId == null) continue;
+
+              _mediaObject.ext!.add(Ext(
+                uri: ext.uri,
+                value: offerId,
+              ));
+            }
           }
 
           // Allow both 1 byte and 2 bytes length header extensions.
